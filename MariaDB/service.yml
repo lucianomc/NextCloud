@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: default
+  name: maria-app
+spec:
+  selector:
+    tier: backend
+    track: develop
+    k8s-app: maria-app
+  ports:
+  - port: 3306
+    targetPort: 3306

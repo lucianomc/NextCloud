@@ -1,0 +1,51 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: my-app-develop
+  namespace: default
+  labels:
+    k8s-app: my-app
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      tier: backend
+      track: develop
+      k8s-app: case-app
+  template:
+    metadata:
+      labels:
+        tier: backend
+        track: develop
+        k8s-app: case-app
+        name: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: nextcloud
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: volume-app
+          mountPath: /var/www/html/config
+        - name: volume-app-nextcloud
+          mountPath: /var/www/html
+        - name: volume-app-apps
+          mountPath: /var/www/html/custom_apps
+        - name: volume-app-data
+          mountPath: /var/www/html/data
+      volumes:
+      - name: volume-app
+        persistentVolumeClaim:
+          claimName: volume-app
+      - name: volume-app-nextcloud
+        persistentVolumeClaim:
+          claimName: volume-app-nextcloud
+      - name: volume-app-apps
+        persistentVolumeClaim:
+          claimName: volume-app-apps
+      - name: volume-app-data
+        persistentVolumeClaim:
+          claimName: volume-app-data

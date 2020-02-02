@@ -1,0 +1,42 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: db-app-develop
+  namespace: default
+  labels:
+    k8s-app: maria-app
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      tier: backend
+      track: develop
+      k8s-app: maria-app
+  template:
+    metadata:
+      labels:
+        tier: backend
+        track: develop
+        k8s-app: maria-app
+        name: db-app
+    spec:
+      containers:
+      - name: db-app
+        image: mariadb
+        imagePullPolicy: Always
+        args:
+        - --transaction-isolation=READ-COMMITTED 
+        - --binlog-format=ROW
+        envFrom:
+        - configMapRef:
+            name: bd-config
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name: my-volume-app
+            mountPath: /var/lib/mysql
+      volumes:
+      - name: my-volume-app
+        persistentVolumeClaim:
+          claimName: my-volume-app

@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: default
+  name: case-app
+spec:
+  selector:
+    tier: backend
+    track: develop
+    k8s-app: case-app
+  ports:
+  - port: 8080
+    targetPort: 80
